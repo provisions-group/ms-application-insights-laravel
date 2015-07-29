@@ -11,6 +11,6 @@ class Facade extends LaravelFacade
      */
     protected static function getFacadeAccessor()
     {
-        return 'msapplicationinsights';
+        return 'MSApplicationInsightsLaravel';
     }
 }
