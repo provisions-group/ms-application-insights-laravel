@@ -1,6 +1,6 @@
 # Microsoft Application Insights for Laravel 5
 
-At this moment in time, this is just a simple Laravel implementation for the client-side JavaScript element of the Microsoft Application Insights tool.
+At this moment in time, this is just a simple Laravel implementation for the client-side JavaScript element of [Microsoft Application Insights](http://azure.microsoft.com/en-gb/services/application-insights/)
 
 ## Installation
 
@@ -40,9 +40,7 @@ Add the facade to the *aliases* array in your application's **config/app.php** f
 
 ### Instrumentation Key
 
-#### Using .env
-
-The package is set up by default to check your application's **.env** file for your *Instrumentation Key*.
+The package will check your application's **.env** file for your *Instrumentation Key*.
 
 Add the following to your **.env** file:
 
@@ -52,5 +50,23 @@ MS_INSTRUMENTATION_KEY=<your instrumentation key>
 ...
 ```
 
-#### Using a published configuration file
+You can find your instrumentation key on the [Microsoft Azure Portal](https://portal.azure.com).
 
+Navigate to:
+
+**Microsoft Azure** > **Browse** > **Application Insights** > *(Application Name)* > **Settings** > **Properties**
+
+## Usage
+
+### Client Side
+
+In order to register information from the client with Application Insights, simply insert the following code into your Blade views:
+
+```
+{!! MSAppInsights::javascript() !!}
+```
+
+## Version History
+
+### 0.1
+- Client-side JavaScript only
