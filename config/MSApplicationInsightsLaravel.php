@@ -15,5 +15,6 @@ return [
      * Alternatively, replace the getenv call below with your key.
      */
 
-    'instrumentationKey' => getenv('MS_INSTRUMENTATION_KEY')
+    'instrumentationKey' => getenv('MS_INSTRUMENTATION_KEY'),
+
 ];

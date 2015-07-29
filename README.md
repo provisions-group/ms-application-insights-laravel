@@ -68,5 +68,8 @@ In order to register information from the client with Application Insights, simp
 
 ## Version History
 
+### 0.1.1
+- Empty key no longer results in an exception being thrown (no JavaScript is inserted into the view)
+
 ### 0.1
 - Client-side JavaScript only
