@@ -31,9 +31,9 @@ class ServiceProvider extends LaravelServiceProvider {
      * @return void
      */
     public function register() {
-
-        // Bind any implementations.
-
+        $this->app->singleton('MSApplicationInsightsLaravel', function($app) {
+            return new MSApplicationInsightsLaravel();
+        });
     }
 
     /**
