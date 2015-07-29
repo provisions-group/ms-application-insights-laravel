@@ -1,8 +1,8 @@
 <?php namespace Marchie\MSApplicationInsightsLaravel;
 
-use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\Facades\Facade as LaravelFacade;
 
-class MSApplicationInsightsLaravelFacade extends Facade
+class Facade extends LaravelFacade
 {
     /**
      * Get the registered name of the component.
