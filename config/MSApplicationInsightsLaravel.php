@@ -12,9 +12,9 @@ return [
      * Add the MS_INSTRUMENTATION_KEY field to your application's .env file,
      * then paste in the value found on the properties page shown above.
      *
-     * Alternatively, replace the getenv call below with your key.
+     * Alternatively, replace the env call below with a string containing your key.
      */
 
-    'instrumentationKey' => getenv('MS_INSTRUMENTATION_KEY'),
+    'instrumentationKey' => env('MS_INSTRUMENTATION_KEY', null),
 
 ];
