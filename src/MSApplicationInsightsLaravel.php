@@ -1,12 +1,14 @@
 <?php namespace Marchie\MSApplicationInsightsLaravel;
 
+use Exception;
+
 class MSApplicationInsightsLaravel
 {
     private $instrumentationKey;
 
     public function __construct()
     {
-        $this->instrumentationKey = $this->getInstrumentationKey();
+        $this->instrumentationKey = $this->setInstrumentationKey();
     }
 
     public function javascript()
@@ -28,8 +30,27 @@ SCRIPT;
 
     }
 
-    private function getInstrumentationKey()
+    private function setInstrumentationKey()
     {
-        return config('MSApplicationInsightsLaravel.instrumentationKey');
+        $instrumentationKey = config('MSApplicationInsightsLaravel.instrumentationKey');
+
+        if ($this->checkInstrumentationKeyValidity($instrumentationKey))
+        {
+            $this->instrumentationKey = $instrumentationKey;
+        }
+    }
+
+    private function checkInstrumentationKeyValidity($instrumentationKey)
+    {
+        if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{8}$/', $instrumentationKey) === 1)
+        {
+            return true;
+        }
+
+        throw new InvalidMSInstrumentationKeyException("'{$instrumentationKey}' is not a valid Microsoft Application Insights instrumentation key.");
     }
 }
+
+class MSApplicationInsightsException extends Exception {}
+
+class InvalidMSInstrumentationKeyException extends MSApplicationInsightsException {}
