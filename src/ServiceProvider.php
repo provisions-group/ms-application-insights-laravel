@@ -52,7 +52,7 @@ class ServiceProvider extends LaravelServiceProvider {
 
         $configPath = __DIR__ . '/../config/MSApplicationInsightsLaravel.php';
 
-        $this->publishes([$configPath => config_path('MSApplicationInisightsLaravel.php')]);
+        $this->publishes([$configPath => config_path('MSApplicationInsightsLaravel.php')]);
 
         $this->mergeConfigFrom($configPath, 'MSApplicationInsightsLaravel');
     }

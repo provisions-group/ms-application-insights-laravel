@@ -1,5 +1,7 @@
 # Microsoft Application Insights for Laravel 5
 
+At this moment in time, this is just a simple Laravel implementation for the client-side JavaScript element of the Microsoft Application Insights tool.
+
 ## Installation
 
 Update the `require` section of your application's **composer.json** file:
@@ -51,3 +53,4 @@ MS_INSTRUMENTATION_KEY=<your instrumentation key>
 ```
 
 #### Using a published configuration file
+
