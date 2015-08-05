@@ -4,7 +4,7 @@ class MSApplicationInsightsClient extends InstrumentationKey
 {
     public function javascript()
     {
-        if ($this->instrumentationKey !== null) {
+        if (isset($this->instrumentationKey)) {
             return <<<SCRIPT
 <script type="text/javascript">
     var appInsights=window.appInsights||function(config){

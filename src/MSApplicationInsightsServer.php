@@ -14,12 +14,18 @@ class MSApplicationInsightsServer extends InstrumentationKey
     public function __construct(Telemetry_Client $telemetryClient)
     {
         parent::__construct();
-        $this->telemetryClient = $telemetryClient;
-        $this->telemetryClient->getContext()->setInstrumentationKey($this->instrumentationKey);
+
+        if (isset($this->instrumentationKey))
+        {
+            $this->telemetryClient = $telemetryClient;
+            $this->telemetryClient->getContext()->setInstrumentationKey($this->instrumentationKey);
+        }
     }
 
     public function __call($name, $arguments)
     {
-        return call_user_func_array($this->telemetryClient->{$name}, $arguments);
+        if (isset($this->instrumentationKey, $this->telemetryClient)) {
+            return call_user_func_array($this->telemetryClient->{$name}, $arguments);
+        }
     }
 }

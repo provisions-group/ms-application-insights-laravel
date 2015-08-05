@@ -96,7 +96,7 @@ class ServiceProvider extends LaravelServiceProvider {
     private function pushLoggerHandler()
     {
         $logger = app('log')->getMonolog();
-        $msApplicationInsights = app('msapplicationinsightsserver');
+        $msApplicationInsights = app('MSApplicationInsightsServer');
         $msApplicationInsightsHandler = new MSApplicationInsightsHandler($msApplicationInsights->telemetryClient);
         $logger->pushHandler($msApplicationInsightsHandler);
     }

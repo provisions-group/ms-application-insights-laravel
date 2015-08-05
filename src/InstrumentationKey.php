@@ -7,6 +7,11 @@ class InstrumentationKey
 {
     protected $instrumentationKey;
 
+    public function __construct()
+    {
+        $this->setInstrumentationKey();
+    }
+
     protected function setInstrumentationKey()
     {
         $instrumentationKey = config('MSApplicationInsightsLaravel.instrumentationKey');
