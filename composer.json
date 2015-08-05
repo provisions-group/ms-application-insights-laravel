@@ -14,7 +14,9 @@
     "require": {
         "php": ">=5.4.0",
         "illuminate/config": "~5.0",
-        "illuminate/support": "~5.0"
+        "illuminate/support": "~5.0",
+        "microsoft/application-insights": "^0.3.0",
+        "marchie/ms-application-insights-monolog": "dev-master"
     },
     "minimum-stability": "dev",
     "autoload": {

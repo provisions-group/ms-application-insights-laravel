@@ -1,5 +1,6 @@
 <?php namespace Marchie\MSApplicationInsightsLaravel;
 
+use ApplicationInsights\Telemetry_Client;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
 class ServiceProvider extends LaravelServiceProvider {
@@ -23,6 +24,7 @@ class ServiceProvider extends LaravelServiceProvider {
         // $this->handleViews();
         // $this->handleTranslations();
         // $this->handleRoutes();
+        $this->pushLoggerHandler();
     }
 
     /**
@@ -31,8 +33,13 @@ class ServiceProvider extends LaravelServiceProvider {
      * @return void
      */
     public function register() {
-        $this->app->singleton('MSApplicationInsightsLaravel', function($app) {
-            return new MSApplicationInsightsLaravel();
+        $this->app->singleton('MSApplicationInsightsClient', function($app) {
+            return new MSApplicationInsightsClient();
+        });
+
+        $this->app->bind('MSApplicationInsightsServer', function($app) {
+            $telemetryClient = new Telemetry_Client();
+            return new MSApplicationInsightsServer($telemetryClient);
         });
     }
 
@@ -44,7 +51,8 @@ class ServiceProvider extends LaravelServiceProvider {
     public function provides() {
 
         return [
-            'msapplicationinsights'
+            'msapplicationinsightsclient',
+            'msapplicationinsightsserver'
         ];
     }
 
@@ -77,5 +85,18 @@ class ServiceProvider extends LaravelServiceProvider {
     private function handleRoutes() {
 
         include __DIR__.'/../routes.php';
+    }
+
+    /**
+     * Pushes Microsoft Application Insights Monolog handler
+     * This is called when an exception or error is logged
+     * within the application
+     */
+    private function pushLoggerHandler()
+    {
+        $logger = Log::getMonolog();
+        $msApplicationInsights = new app('msapplicationinsightsserver');
+        $msApplicationInsightsHandler = new MSApplicationInsightsHandler($msApplicationInsights->telemetryClient);
+        $logger->pushHandler($msApplicationInsightsHandler);
     }
 }

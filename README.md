@@ -6,10 +6,10 @@ At this moment in time, this is just a simple Laravel implementation for the cli
 
 Update the `require` section of your application's **composer.json** file:
 
-```
+```js
 "require": {
 	...
-	"marchie/ms-application-insights-laravel": "~0.1",
+	"marchie/ms-application-insights-laravel": "dev-master",
 	...
 }
 ```
@@ -18,7 +18,7 @@ Update the `require` section of your application's **composer.json** file:
 
 Add the service provider to the *providers* array in your application's **config/app.php** file:
 
-```
+```php
 'providers' => [
 	...
 	Marchie\MSApplicationInsightsLaravel\ServiceProvider::class,
@@ -30,7 +30,7 @@ Add the service provider to the *providers* array in your application's **config
 
 Add the facade to the *aliases* array in your application's **config/app.php** file:
 
-```
+```php
 'aliases' => [
 	...
 	'MSAppInsights' => Marchie\MSApplicationInsightsLaravel\Facade::class,
@@ -62,7 +62,7 @@ Navigate to:
 
 In order to register information from the client with Application Insights, simply insert the following code into your Blade views:
 
-```
+```php
 {!! MSAppInsights::javascript() !!}
 ```
 
