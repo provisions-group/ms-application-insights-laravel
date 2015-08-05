@@ -2,6 +2,7 @@
 
 use ApplicationInsights\Telemetry_Client;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
+use Marchie\MSApplicationInsightsMonolog\MSApplicationInsightsHandler;
 
 class ServiceProvider extends LaravelServiceProvider {
 
@@ -94,8 +95,8 @@ class ServiceProvider extends LaravelServiceProvider {
      */
     private function pushLoggerHandler()
     {
-        $logger = Log::getMonolog();
-        $msApplicationInsights = new app('msapplicationinsightsserver');
+        $logger = app('log')->getMonolog();
+        $msApplicationInsights = app('msapplicationinsightsserver');
         $msApplicationInsightsHandler = new MSApplicationInsightsHandler($msApplicationInsights->telemetryClient);
         $logger->pushHandler($msApplicationInsightsHandler);
     }
