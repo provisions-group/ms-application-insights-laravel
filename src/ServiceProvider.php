@@ -97,7 +97,9 @@ class ServiceProvider extends LaravelServiceProvider {
     {
         $logger = app('log')->getMonolog();
         $msApplicationInsights = app('MSApplicationInsightsServer');
-        $msApplicationInsightsHandler = new MSApplicationInsightsHandler($msApplicationInsights->telemetryClient);
-        $logger->pushHandler($msApplicationInsightsHandler);
+        if (isset($msApplicationInsights->telemetryClient)) {
+            $msApplicationInsightsHandler = new MSApplicationInsightsHandler($msApplicationInsights->telemetryClient);
+            $logger->pushHandler($msApplicationInsightsHandler);
+        }
     }
 }
