@@ -21,21 +21,49 @@ Add the service provider to the *providers* array in your application's **config
 ```php
 'providers' => [
 	...
-	Marchie\MSApplicationInsightsLaravel\ServiceProvider::class,
+	Marchie\MSApplicationInsightsLaravel\Providers\MSApplicationInsightsServiceProvider::class,
 	...
 ]
 ```
 
 ### Facade
 
-Add the facade to the *aliases* array in your application's **config/app.php** file:
+Add the facades to the *aliases* array in your application's **config/app.php** file:
 
 ```php
 'aliases' => [
 	...
-	'MSAppInsights' => Marchie\MSApplicationInsightsLaravel\Facade::class,
+	'AIClient' => Marchie\MSApplicationInsightsLaravel\Facades\MSApplicationInsightsClientFacade::class,
+	'AIServer' => Marchie\MSApplicationInsightsLaravel\Facades\MSApplicationInsightsServerFacade::class,
 	...
 ]
+```
+
+### Request Tracking Middleware
+
+To monitor your application's performance with request tracking, add the middleware to your application's *global* HTTP middleware stack , found in **app/Http/Kernel.php**:
+
+```php
+
+protected $middleware = [
+	...
+	'MSApplicationInsightsMiddleware',
+	...
+]
+
+```
+
+### Exception Handler
+
+To report exceptions that occur in your application, use the provided exception handler.  *Replace* the following line in your application's **app/Handlers/Exception.php** file:
+
+```php
+...
+
+~~use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;~~
+use Marchie\MSApplicationInsightsLaravel\Handlers\MSApplicationInsightsExceptionHandler as ExceptionHandler;
+
+...
 ```
 
 ### Instrumentation Key
@@ -68,8 +96,14 @@ In order to register information from the client with Application Insights, simp
 
 ## Version History
 
+### 0.2.0
+- Exception handler and request tracking
+
+### 0.1.2
+- Correcting silly mistake!
+
 ### 0.1.1
 - Empty key no longer results in an exception being thrown (no JavaScript is inserted into the view)
 
-### 0.1
+### 0.1.0
 - Client-side JavaScript only

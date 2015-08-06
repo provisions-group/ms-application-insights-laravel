@@ -5,7 +5,6 @@ use ApplicationInsights\Telemetry_Client;
 
 class MSApplicationInsightsServer extends InstrumentationKey
 {
-
     /**
      * @var Telemetry_Client
      */
@@ -26,13 +25,15 @@ class MSApplicationInsightsServer extends InstrumentationKey
 
     public function shutdown()
     {
-        $this->telemetryClient->flush();
+        app('Illuminate\Contracts\Bus\Dispatcher')->dispatch(
+            new Jobs\MSApplicationInsightsFlushJob($this)
+        );
     }
 
     public function __call($name, $arguments)
     {
         if (isset($this->instrumentationKey, $this->telemetryClient)) {
-            return call_user_func_array($this->telemetryClient->{$name}, $arguments);
+            return call_user_func_array([&$this->telemetryClient, $name], $arguments);
         }
     }
 }

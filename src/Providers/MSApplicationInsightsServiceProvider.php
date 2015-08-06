@@ -1,10 +1,12 @@
-<?php namespace Marchie\MSApplicationInsightsLaravel;
+<?php namespace Marchie\MSApplicationInsightsLaravel\Providers;
 
 use ApplicationInsights\Telemetry_Client;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
-use Marchie\MSApplicationInsightsMonolog\MSApplicationInsightsHandler;
+use Marchie\MSApplicationInsightsLaravel\Middleware\MSApplicationInsightsMiddleware;
+use Marchie\MSApplicationInsightsLaravel\MSApplicationInsightsClient;
+use Marchie\MSApplicationInsightsLaravel\MSApplicationInsightsServer;
 
-class ServiceProvider extends LaravelServiceProvider {
+class MSApplicationInsightsServiceProvider extends LaravelServiceProvider {
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -25,7 +27,6 @@ class ServiceProvider extends LaravelServiceProvider {
         // $this->handleViews();
         // $this->handleTranslations();
         // $this->handleRoutes();
-        // $this->pushLoggerHandler();
     }
 
     /**
@@ -33,14 +34,19 @@ class ServiceProvider extends LaravelServiceProvider {
      *
      * @return void
      */
-    public function register() {
-        $this->app->singleton('MSApplicationInsightsClient', function($app) {
-            return new MSApplicationInsightsClient();
-        });
-
-        $this->app->singleton('MSApplicationInsightsServer', function($app) {
+    public function register()
+    {
+        $this->app->singleton('MSApplicationInsightsServer', function ($app) {
             $telemetryClient = new Telemetry_Client();
             return new MSApplicationInsightsServer($telemetryClient);
+        });
+
+        $this->app->singleton('MSApplicationInsightsMiddleware', function ($app) {
+            return new MSApplicationInsightsMiddleware($app['MSApplicationInsightsServer']);
+        });
+
+        $this->app->singleton('MSApplicationInsightsClient', function ($app) {
+            return new MSApplicationInsightsClient();
         });
     }
 
@@ -86,20 +92,5 @@ class ServiceProvider extends LaravelServiceProvider {
     private function handleRoutes() {
 
         include __DIR__.'/../routes.php';
-    }
-
-    /**
-     * Pushes Microsoft Application Insights Monolog handler
-     * This is called when an exception or error is logged
-     * within the application
-     */
-    private function pushLoggerHandler()
-    {
-        $msApplicationInsights = app('MSApplicationInsightsServer');
-
-        if (isset($msApplicationInsights->telemetryClient)) {
-            $msApplicationInsightsHandler = new MSApplicationInsightsHandler($msApplicationInsights->telemetryClient);
-            $this->app['log']->getMonolog()->pushHandler($msApplicationInsightsHandler);
-        }
     }
 }

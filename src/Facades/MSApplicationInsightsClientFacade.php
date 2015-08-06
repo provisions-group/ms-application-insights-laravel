@@ -1,8 +1,8 @@
-<?php namespace Marchie\MSApplicationInsightsLaravel;
+<?php namespace Marchie\MSApplicationInsightsLaravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class ServerFacade extends Facade
+class MSApplicationInsightsClientFacade extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -11,6 +11,6 @@ class ServerFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'MSApplicationInsightsServer';
+        return 'MSApplicationInsightsClient';
     }
 }

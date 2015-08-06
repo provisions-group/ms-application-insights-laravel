@@ -1,5 +1,5 @@
 <?php
-namespace Marchie\MSApplicationInsightsLaravel;
+namespace Marchie\MSApplicationInsightsLaravel\Handlers;
 
 use Exception;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -25,11 +25,11 @@ class MSApplicationInsightsExceptionHandler extends ExceptionHandler
             }
         }
 
-        $telemetryClient = app('MSApplicationInsightsServer');
+        $msApplicationInsights = app('MSApplicationInsightsServer');
 
-        if ($telemetryClient)
+        if ($msApplicationInsights->telemetryClient)
         {
-            $telemetryClient->trackException($e);
+            $msApplicationInsights->telemetryClient->trackException($e);
         }
 
         return parent::report($e);
