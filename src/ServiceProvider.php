@@ -25,7 +25,7 @@ class ServiceProvider extends LaravelServiceProvider {
         // $this->handleViews();
         // $this->handleTranslations();
         // $this->handleRoutes();
-        $this->pushLoggerHandler();
+        // $this->pushLoggerHandler();
     }
 
     /**
@@ -38,7 +38,7 @@ class ServiceProvider extends LaravelServiceProvider {
             return new MSApplicationInsightsClient();
         });
 
-        $this->app->bind('MSApplicationInsightsServer', function($app) {
+        $this->app->singleton('MSApplicationInsightsServer', function($app) {
             $telemetryClient = new Telemetry_Client();
             return new MSApplicationInsightsServer($telemetryClient);
         });
@@ -95,11 +95,11 @@ class ServiceProvider extends LaravelServiceProvider {
      */
     private function pushLoggerHandler()
     {
-        $logger = app('log')->getMonolog();
         $msApplicationInsights = app('MSApplicationInsightsServer');
+
         if (isset($msApplicationInsights->telemetryClient)) {
             $msApplicationInsightsHandler = new MSApplicationInsightsHandler($msApplicationInsights->telemetryClient);
-            $logger->pushHandler($msApplicationInsightsHandler);
+            $this->app['log']->getMonolog()->pushHandler($msApplicationInsightsHandler);
         }
     }
 }
