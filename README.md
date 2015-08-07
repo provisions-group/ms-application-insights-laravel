@@ -91,7 +91,10 @@ To report exceptions that occur in your application, use the provided exception 
 ```php
 ...
 
-~~use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;~~
+# Delete this line
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+
+# Insert this line
 use Marchie\MSApplicationInsightsLaravel\Handlers\MSApplicationInsightsExceptionHandler as ExceptionHandler;
 
 ...
