@@ -2,30 +2,30 @@
 
 namespace Marchie\MSApplicationInsightsLaravel\Jobs;
 
+use ApplicationInsights\Telemetry_Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Marchie\MSApplicationInsightsLaravel\MSApplicationInsightsServer;
 
 class MSApplicationInsightsFlushJob implements SelfHandling, ShouldQueue
 {
     use Queueable, InteractsWithQueue, SerializesModels;
 
     /**
-     * @var MSApplicationInsightsServer
+     * @var
      */
-    private $msApplicationInsights;
+    private $telemetryClient;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(MSApplicationInsightsServer $msApplicationInsights)
+    public function __construct(Telemetry_Client $telemetryClient)
     {
-        $this->msApplicationInsights = $msApplicationInsights;
+        $this->telemetryClient = $telemetryClient;
     }
 
     /**
@@ -35,6 +35,6 @@ class MSApplicationInsightsFlushJob implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
-        $this->msApplicationInsights->telemetryClient->flush();
+        $this->telemetryClient->flush();
     }
 }

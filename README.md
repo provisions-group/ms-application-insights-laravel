@@ -1,6 +1,6 @@
 # Microsoft Application Insights for Laravel 5
 
-At this moment in time, this is just a simple Laravel implementation for the client-side JavaScript element of [Microsoft Application Insights](http://azure.microsoft.com/en-gb/services/application-insights/)
+A simple Laravel implementation for the client-side JavaScript element of [Microsoft Application Insights](http://azure.microsoft.com/en-gb/services/application-insights/)
 
 ## Installation
 
@@ -39,33 +39,6 @@ Add the facades to the *aliases* array in your application's **config/app.php** 
 ]
 ```
 
-### Request Tracking Middleware
-
-To monitor your application's performance with request tracking, add the middleware to your application's *global* HTTP middleware stack , found in **app/Http/Kernel.php**:
-
-```php
-
-protected $middleware = [
-	...
-	'MSApplicationInsightsMiddleware',
-	...
-]
-
-```
-
-### Exception Handler
-
-To report exceptions that occur in your application, use the provided exception handler.  *Replace* the following line in your application's **app/Handlers/Exception.php** file:
-
-```php
-...
-
-~~use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;~~
-use Marchie\MSApplicationInsightsLaravel\Handlers\MSApplicationInsightsExceptionHandler as ExceptionHandler;
-
-...
-```
-
 ### Instrumentation Key
 
 The package will check your application's **.env** file for your *Instrumentation Key*.
@@ -86,13 +59,67 @@ Navigate to:
 
 ## Usage
 
+### Request Tracking Middleware
+
+To monitor your application's performance with request tracking, add the middleware to your application's *global* HTTP middleware stack , found in **app/Http/Kernel.php**:
+
+```php
+
+protected $middleware = [
+	...
+	'MSApplicationInsightsMiddleware',
+	...
+]
+
+```
+
+The request will send the following additional parameters to Application Insights:
+
+- **ajax** *(boolean)*: *true* if the request is an AJAX request
+- **ip** *(string)*: The client's IP address
+- **pjax** *(boolean)*: *true* if the request is a PJAX request
+- **secure** *(boolean)*: *true* if the request was sent over HTTPS
+- **route** *(string)*: The name of the route, if applicable
+- **user** *(integer)*: The ID of the logged in user, if applicable
+
+The middleware is also used to estimate the time that a user has spent on a particular page.  This is sent as a *trace* event named **browse_duration**.
+
+### Exception Handler
+
+To report exceptions that occur in your application, use the provided exception handler.  *Replace* the following line in your application's **app/Handlers/Exception.php** file:
+
+```php
+...
+
+~~use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;~~
+use Marchie\MSApplicationInsightsLaravel\Handlers\MSApplicationInsightsExceptionHandler as ExceptionHandler;
+
+...
+```
+
 ### Client Side
 
-In order to register information from the client with Application Insights, simply insert the following code into your Blade views:
+In order to register page view information from the client with Application Insights, simply insert the following code into your Blade views:
 
 ```php
 {!! MSAppInsights::javascript() !!}
 ```
+
+NOTE: Microsoft recommend that you put the script in the `<head>` section of your pages, in order to calculate the fullest extent of page load time on the client.
+
+### Custom
+
+If you want to use any of the underlying [ApplicationInsights-PHP](https://github.com/Microsoft/ApplicationInsights-PHP) functionality, you can call the methods directly from the server facade:
+
+```php
+...
+MSAIServer::trackEvent('Test event');
+...
+```
+
+See the [ApplicationInsights-PHP](https://github.com/Microsoft/ApplicationInsights-PHP) page for more information on the available methods.
+
+NOTE: You don't need to worry about calling the *flush* method; the package takes care of that bit for you when it shuts down.
 
 ## Version History
 

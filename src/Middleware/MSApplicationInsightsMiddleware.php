@@ -29,9 +29,13 @@ class MSApplicationInsightsMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $this->trackPageView($request);
+        $this->trackPageViewDuration($request);
 
-        return $next($request);
+        $response = $next($request);
+
+        $this->flashPageInfo($request);
+
+        return $response;
     }
 
     /**
@@ -41,8 +45,6 @@ class MSApplicationInsightsMiddleware
      */
     public function terminate($request, $response)
     {
-        $this->flashPageInfo($request);
-
         $this->trackRequest($request, $response);
     }
 
@@ -53,21 +55,14 @@ class MSApplicationInsightsMiddleware
      * @param $request
      * @return void
      */
-    private function trackPageView($request)
+    private function trackPageViewDuration($request)
     {
         if ($request->session()->has('ms_application_insights_page_info'))
         {
-            $pageInfo = $request->session()->get('ms_application_insights_page_info', null);
-
-            if (isset($pageInfo))
-            {
-                $this->msApplicationInsights->telemetryClient->trackPageView(
-                    'application',
-                    $pageInfo['url'],
-                    $this->getPageViewDuration($pageInfo['load_time']),
-                    $pageInfo['properties']
-                );
-            }
+            $this->msApplicationInsights->telemetryClient->trackMessage(
+                'browse_duration',
+                $this->getPageViewProperties($request)
+            );
         }
     }
 
@@ -89,8 +84,8 @@ class MSApplicationInsightsMiddleware
                 $this->getRequestDuration(),
                 $response->status(),
                 $this->isSuccessful($response),
-                $this->getProperties($request),
-                $this->getMeasurements($request, $response)
+                $this->getRequestProperties($request),
+                $this->getRequestMeasurements($request, $response)
             );
         }
     }
@@ -106,7 +101,7 @@ class MSApplicationInsightsMiddleware
         $request->session()->flash('ms_application_insights_page_info', [
             'url' => $request->fullUrl(),
             'load_time' => microtime(true),
-            'properties' => $this->getProperties($request)
+            'properties' => $this->getRequestProperties($request)
         ]);
     }
 
@@ -118,7 +113,7 @@ class MSApplicationInsightsMiddleware
      *
      * @return array|null
      */
-    private function getProperties($request)
+    private function getRequestProperties($request)
     {
         $properties = [
             'ajax' => $request->ajax(),
@@ -127,9 +122,10 @@ class MSApplicationInsightsMiddleware
             'secure' => $request->secure(),
         ];
 
-        if ($request->route())
+        if ($request->route()
+            && $request->route()->getName())
         {
-            $properties['route'] = $request->route();
+            $properties['route'] = $request->route()->getName();
         }
 
         if ($request->user())
@@ -137,7 +133,7 @@ class MSApplicationInsightsMiddleware
             $properties['user'] = $request->user()->id;
         }
 
-        return ( ! empty($properties)) ? $properties : null;
+        return $properties;
     }
 
 
@@ -149,7 +145,7 @@ class MSApplicationInsightsMiddleware
      *
      * @return array|null
      */
-    private function getMeasurements($request, $response)
+    private function getRequestMeasurements($request, $response)
     {
         $measurements = [];
 
@@ -166,9 +162,8 @@ class MSApplicationInsightsMiddleware
      */
     private function getPageViewDuration($loadTime)
     {
-        return $_SERVER['REQUEST_TIME_FLOAT'] - $loadTime;
+        return round(($_SERVER['REQUEST_TIME_FLOAT'] - $loadTime), 2);
     }
-
 
     /**
      * Calculate the time spent processing the request
@@ -177,7 +172,7 @@ class MSApplicationInsightsMiddleware
      */
     private function getRequestDuration()
     {
-        return microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
+        return (microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000;
     }
 
 
@@ -191,6 +186,63 @@ class MSApplicationInsightsMiddleware
     private function isSuccessful($response)
     {
         return ($response->status() < 400);
+    }
+
+
+    private function getPageViewProperties($request)
+    {
+        $pageInfo = $request->session()->get('ms_application_insights_page_info');
+
+        $properties = $pageInfo['properties'];
+
+        $properties['url'] = $pageInfo['url'];
+        $properties['duration'] = $this->getPageViewDuration($pageInfo['load_time']);
+        $properties['duration_formatted'] = $this->formatTime($properties['duration']);
+
+        return $properties;
+    }
+
+
+    /**
+     * @param $duration
+     *
+     * @return string
+     */
+    private function formatTime($duration)
+    {
+        $milliseconds = str_pad((round($duration - floor($duration), 2) * 100), 2, '0', STR_PAD_LEFT);
+
+        if ($duration < 1) {
+            return "0.{$milliseconds}";
+        }
+
+        $seconds = floor($duration % 60);
+
+        if ($duration < 60) {
+            return "{$seconds}.{$milliseconds}";
+        }
+
+        $string = str_pad($seconds, 2, '0', STR_PAD_LEFT) . '.' . $milliseconds;
+
+        $minutes = floor(($duration % 3600) / 60);
+
+        if ($duration < 3600) {
+            return "{$minutes}:{$string}";
+        }
+
+        $string = str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':' . $string;
+
+        $hours = floor(($duration % 86400) / 3600);
+
+        if ($duration < 86400) {
+            return "{$hours}:{$string}";
+        }
+
+        $string = str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . $string;
+
+        $days = floor($duration / 86400);
+
+        return $days . ':' . $string;
     }
 
 }
