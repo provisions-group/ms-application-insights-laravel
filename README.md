@@ -1,6 +1,6 @@
 # Microsoft Application Insights for Laravel 5
 
-A simple Laravel implementation for the client-side JavaScript element of [Microsoft Application Insights](http://azure.microsoft.com/en-gb/services/application-insights/)
+A simple Laravel implementation for [Microsoft Application Insights](http://azure.microsoft.com/en-gb/services/application-insights/)
 
 ## Installation
 
