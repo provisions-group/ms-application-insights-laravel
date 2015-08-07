@@ -25,9 +25,7 @@ class MSApplicationInsightsServer extends InstrumentationKey
 
     public function shutdown()
     {
-        app('Illuminate\Contracts\Bus\Dispatcher')->dispatch(
-            new Jobs\MSApplicationInsightsFlushJob($this->telemetryClient)
-        );
+        $this->telemetryClient->flush();
     }
 
     public function __call($name, $arguments)

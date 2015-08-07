@@ -23,12 +23,11 @@ class MSApplicationInsightsHelpers
      */
     public function trackPageViewDuration($request)
     {
-        if ($request->session()->has('ms_application_insights_page_info'))
-        {
-            $this->msApplicationInsights->telemetryClient->trackMessage(
-                'browse_duration',
-                $this->getPageViewProperties($request)
-            );
+        if ($this->telemetryEnabled()) {
+            if ($request->session()->has('ms_application_insights_page_info')) {
+                $this->msApplicationInsights->telemetryClient->trackMessage('browse_duration',
+                    $this->getPageViewProperties($request));
+            }
         }
     }
 
@@ -41,18 +40,21 @@ class MSApplicationInsightsHelpers
      */
     public function trackRequest($request, $response)
     {
-        if ($this->msApplicationInsights->telemetryClient)
+        if ($this->telemetryEnabled())
         {
-            $this->msApplicationInsights->telemetryClient->trackRequest(
-                'application',
-                $request->fullUrl(),
-                $_SERVER['REQUEST_TIME_FLOAT'],
-                $this->getRequestDuration(),
-                $response->status(),
-                $this->isSuccessful($response),
-                $this->getRequestProperties($request),
-                $this->getRequestMeasurements($request, $response)
-            );
+            if ($this->msApplicationInsights->telemetryClient)
+            {
+                $this->msApplicationInsights->telemetryClient->trackRequest(
+                    'application',
+                    $request->fullUrl(),
+                    $_SERVER['REQUEST_TIME_FLOAT'],
+                    $this->getRequestDuration(),
+                    $response->status(),
+                    $this->isSuccessful($response),
+                    $this->getRequestProperties($request),
+                    $this->getRequestMeasurements($request, $response)
+                );
+            }
         }
     }
 
@@ -64,11 +66,20 @@ class MSApplicationInsightsHelpers
      */
     public function flashPageInfo($request)
     {
-        $request->session()->flash('ms_application_insights_page_info', [
-            'url' => $request->fullUrl(),
-            'load_time' => microtime(true),
-            'properties' => $this->getRequestProperties($request)
-        ]);
+        if ($this->telemetryEnabled())
+        {
+            $request->session()->flash('ms_application_insights_page_info', [
+                'url' => $request->fullUrl(),
+                'load_time' => microtime(true),
+                'properties' => $this->getRequestProperties($request)
+            ]);
+        }
+
+    }
+
+    private function telemetryEnabled()
+    {
+        return isset($this->msApplicationInsights->telemetryClient);
     }
 
 

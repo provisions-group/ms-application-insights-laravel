@@ -14,7 +14,7 @@ class MSApplicationInsightsMiddleware
 
 
     /**
-     * @param MSApplicationInsightsServer $msApplicationInsights
+     * @param MSApplicationInsightsHelpers $msApplicationInsightsHelpers
      */
     public function __construct(MSApplicationInsightsHelpers $msApplicationInsightHelpers)
     {

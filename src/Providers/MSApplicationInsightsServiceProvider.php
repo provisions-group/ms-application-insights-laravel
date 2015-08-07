@@ -39,6 +39,7 @@ class MSApplicationInsightsServiceProvider extends LaravelServiceProvider {
 
         $this->app->singleton('MSApplicationInsightsMiddleware', function ($app) {
             $msApplicationInsightsHelpers = new MSApplicationInsightsHelpers($app['MSApplicationInsightsServer']);
+
             return new MSApplicationInsightsMiddleware($msApplicationInsightsHelpers);
         });
 
