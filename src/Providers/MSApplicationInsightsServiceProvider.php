@@ -65,7 +65,7 @@ class MSApplicationInsightsServiceProvider extends LaravelServiceProvider {
 
     private function handleConfigs() {
 
-        $configPath = __DIR__ . '/../config/MSApplicationInsightsLaravel.php';
+        $configPath = __DIR__ . '/../../config/MSApplicationInsightsLaravel.php';
 
         $this->publishes([$configPath => config_path('MSApplicationInsightsLaravel.php')]);
 

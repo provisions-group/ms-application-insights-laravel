@@ -2,17 +2,19 @@
 namespace Marchie\MSApplicationInsightsLaravel\Middleware;
 
 use Closure;
+use Marchie\MSApplicationInsightsLaravel\MSApplicationInsightsServer;
 
 class MSApplicationInsightsMiddleware
 {
-    private $aiData;
-
     /**
      * @var
      */
     private $msApplicationInsights;
 
 
+    /**
+     * @param MSApplicationInsightsServer $msApplicationInsights
+     */
     public function __construct(MSApplicationInsightsServer $msApplicationInsights)
     {
         $this->msApplicationInsights = $msApplicationInsights;
@@ -27,44 +29,96 @@ class MSApplicationInsightsMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $this->setRequestData($request);
+        $this->trackPageView($request);
 
         return $next($request);
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Response $response
+     * @return void
+     */
     public function terminate($request, $response)
     {
-        $this->setResponseData($response);
+        $this->flashPageInfo($request);
 
-        $this->trackRequest();
+        $this->trackRequest($request, $response);
     }
 
-    private function trackRequest()
+
+    /**
+     * Track a page view
+     *
+     * @param $request
+     * @return void
+     */
+    private function trackPageView($request)
     {
-        if ($this->msApplicationInsights->telemetryClient)
+        if ($request->session()->has('ms_application_insights_page_info'))
         {
-            $this->msApplicationInsights->telemetryClient->trackRequest('application', $this->aiData['url'], $this->aiData['start_time'], $this->aiData['duration'], $this->aiData['status_code'], $this->aiData['success'], $this->aiData['properties'], $this->aiData['measurements']);
+            $pageInfo = $request->session()->get('ms_application_insights_page_info', null);
+
+            if (isset($pageInfo))
+            {
+                $this->msApplicationInsights->telemetryClient->trackPageView(
+                    'application',
+                    $pageInfo['url'],
+                    $this->getPageViewDuration($pageInfo['load_time']),
+                    $pageInfo['properties']
+                );
+            }
         }
     }
 
-    private function setRequestData($request)
+
+    /**
+     * Track application performance
+     *
+     * @param $request
+     * @param $response
+     */
+    private function trackRequest($request, $response)
     {
-        $this->aiData = [
-            'start_time' => $_SERVER['REQUEST_TIME_FLOAT'],
+        if ($this->msApplicationInsights->telemetryClient)
+        {
+            $this->msApplicationInsights->telemetryClient->trackRequest(
+                'application',
+                $request->fullUrl(),
+                $_SERVER['REQUEST_TIME_FLOAT'],
+                $this->getRequestDuration(),
+                $response->status(),
+                $this->isSuccessful($response),
+                $this->getProperties($request),
+                $this->getMeasurements($request, $response)
+            );
+        }
+    }
+
+
+    /**
+     * Flash page info for use in following page request
+     *
+     * @param $request
+     */
+    private function flashPageInfo($request)
+    {
+        $request->session()->flash('ms_application_insights_page_info', [
             'url' => $request->fullUrl(),
-            'properties' => $this->setProperties($request),
-            'measurements' => $this->setMeasurements($request),
-        ];
+            'load_time' => microtime(true),
+            'properties' => $this->getProperties($request)
+        ]);
     }
 
-    private function setResponseData($response)
-    {
-        $this->aiData['status_code'] = $response->status();
-        $this->aiData['duration'] = (microtime(true) - $this->aiData['start_time']) * 1000;
-        $this->aiData['success'] = ($response->status() < 400);
-    }
 
-    private function setProperties($request)
+    /**
+     * Get properties from the Laravel request
+     *
+     * @param $request
+     *
+     * @return array|null
+     */
+    private function getProperties($request)
     {
         $properties = [
             'ajax' => $request->ajax(),
@@ -87,10 +141,56 @@ class MSApplicationInsightsMiddleware
     }
 
 
-    private function setMeasurements($request)
+    /**
+     * Doesn't do a lot right now!
+     *
+     * @param $request
+     * @param $response
+     *
+     * @return array|null
+     */
+    private function getMeasurements($request, $response)
     {
         $measurements = [];
 
         return ( ! empty($measurements)) ? $measurements : null;
     }
+
+
+    /**
+     * Estimate the time spent viewing the previous page
+     *
+     * @param $loadTime
+     *
+     * @return mixed
+     */
+    private function getPageViewDuration($loadTime)
+    {
+        return $_SERVER['REQUEST_TIME_FLOAT'] - $loadTime;
+    }
+
+
+    /**
+     * Calculate the time spent processing the request
+     *
+     * @return mixed
+     */
+    private function getRequestDuration()
+    {
+        return microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
+    }
+
+
+    /**
+     * Determine if the request was successful
+     *
+     * @param $response
+     *
+     * @return bool
+     */
+    private function isSuccessful($response)
+    {
+        return ($response->status() < 400);
+    }
+
 }
