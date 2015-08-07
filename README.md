@@ -9,7 +9,7 @@ Update the `require` section of your application's **composer.json** file:
 ```js
 "require": {
 	...
-	"marchie/ms-application-insights-laravel": "dev-master",
+	"marchie/ms-application-insights-laravel": "0.2.0",
 	...
 }
 ```
