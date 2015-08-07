@@ -21,12 +21,7 @@ class MSApplicationInsightsServiceProvider extends LaravelServiceProvider {
      * @return void
      */
     public function boot() {
-
         $this->handleConfigs();
-        // $this->handleMigrations();
-        // $this->handleViews();
-        // $this->handleTranslations();
-        // $this->handleRoutes();
     }
 
     /**
@@ -58,8 +53,9 @@ class MSApplicationInsightsServiceProvider extends LaravelServiceProvider {
     public function provides() {
 
         return [
-            'msapplicationinsightsclient',
-            'msapplicationinsightsserver'
+            'MSApplicationInsightsServer',
+            'MSApplicationInsightsMiddleware',
+            'MSApplicationInsightsClient'
         ];
     }
 
@@ -70,27 +66,5 @@ class MSApplicationInsightsServiceProvider extends LaravelServiceProvider {
         $this->publishes([$configPath => config_path('MSApplicationInsightsLaravel.php')]);
 
         $this->mergeConfigFrom($configPath, 'MSApplicationInsightsLaravel');
-    }
-
-    private function handleTranslations() {
-
-        $this->loadTranslationsFrom('MSApplicationInsightsLaravel', __DIR__.'/../lang');
-    }
-
-    private function handleViews() {
-
-        $this->loadViewsFrom('MSApplicationInsightsLaravel', __DIR__.'/../views');
-
-        $this->publishes([__DIR__.'/../views' => base_path('resources/views/vendor/MSApplicationInsightsLaravel')]);
-    }
-
-    private function handleMigrations() {
-
-        $this->publishes([__DIR__ . '/../migrations' => base_path('database/migrations')]);
-    }
-
-    private function handleRoutes() {
-
-        include __DIR__.'/../routes.php';
     }
 }
