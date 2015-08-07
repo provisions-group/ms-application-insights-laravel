@@ -4,6 +4,7 @@ use ApplicationInsights\Telemetry_Client;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 use Marchie\MSApplicationInsightsLaravel\Middleware\MSApplicationInsightsMiddleware;
 use Marchie\MSApplicationInsightsLaravel\MSApplicationInsightsClient;
+use Marchie\MSApplicationInsightsLaravel\MSApplicationInsightsHelpers;
 use Marchie\MSApplicationInsightsLaravel\MSApplicationInsightsServer;
 
 class MSApplicationInsightsServiceProvider extends LaravelServiceProvider {
@@ -37,7 +38,8 @@ class MSApplicationInsightsServiceProvider extends LaravelServiceProvider {
         });
 
         $this->app->singleton('MSApplicationInsightsMiddleware', function ($app) {
-            return new MSApplicationInsightsMiddleware($app['MSApplicationInsightsServer']);
+            $msApplicationInsightsHelpers = new MSApplicationInsightsHelpers($app['MSApplicationInsightsServer']);
+            return new MSApplicationInsightsMiddleware($msApplicationInsightsHelpers);
         });
 
         $this->app->singleton('MSApplicationInsightsClient', function ($app) {

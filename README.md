@@ -127,7 +127,7 @@ NOTE: You don't need to worry about calling the *flush* method; the package take
 ## Version History
 
 ### 0.2.0
-- Exception handler and request tracking
+- Server side implementation
 
 ### 0.1.2
 - Correcting silly mistake!
