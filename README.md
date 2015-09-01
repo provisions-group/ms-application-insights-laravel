@@ -105,7 +105,7 @@ use Marchie\MSApplicationInsightsLaravel\Handlers\MSApplicationInsightsException
 In order to register page view information from the client with Application Insights, simply insert the following code into your Blade views:
 
 ```php
-{!! MSAppInsights::javascript() !!}
+{!! AIClient::javascript() !!}
 ```
 
 NOTE: Microsoft recommend that you put the script in the `<head>` section of your pages, in order to calculate the fullest extent of page load time on the client.
@@ -116,7 +116,7 @@ If you want to use any of the underlying [ApplicationInsights-PHP](https://githu
 
 ```php
 ...
-MSAIServer::trackEvent('Test event');
+AIServer::trackEvent('Test event');
 ...
 ```
 
