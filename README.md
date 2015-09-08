@@ -126,6 +126,9 @@ NOTE: You don't need to worry about calling the *flush* method; the package take
 
 ## Version History
 
+### 0.2.1
+- Flush queue on exception (otherwise, if Laravel is daemonized, queue exceptions will not be reported)
+
 ### 0.2.0
 - Server side implementation
 

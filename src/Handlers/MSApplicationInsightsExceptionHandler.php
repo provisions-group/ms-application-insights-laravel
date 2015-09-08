@@ -30,6 +30,7 @@ class MSApplicationInsightsExceptionHandler extends ExceptionHandler
         if ($msApplicationInsights->telemetryClient)
         {
             $msApplicationInsights->telemetryClient->trackException($e);
+            $msApplicationInsights->telemetryClient->flush();
         }
 
         return parent::report($e);
