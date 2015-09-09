@@ -119,7 +119,7 @@ class MSApplicationInsightsHelpers
         }
 
     }
-    
+
     /**
      * Determines whether the Telemetry Client is enabled
      *
