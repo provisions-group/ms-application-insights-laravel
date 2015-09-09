@@ -1,6 +1,9 @@
 <?php
 namespace Marchie\MSApplicationInsightsLaravel;
 
+use Exception;
+use Illuminate\Http\Request;
+
 class MSApplicationInsightsHelpers
 {
 
@@ -58,6 +61,46 @@ class MSApplicationInsightsHelpers
         }
     }
 
+    /**
+     * Track application exceptions
+     *
+     * @param Exception $e
+     */
+    public function trackException(Exception $e)
+    {
+        if ($this->telemetryEnabled()) {
+            $this->msApplicationInsights->telemetryClient->trackException($e,
+                $this->getRequestPropertiesFromException($e));
+            $this->msApplicationInsights->telemetryClient->flush();
+        }
+    }
+
+
+    /**
+     * Get request properties from the exception trace, if available
+     *
+     * @param Exception $e
+     *
+     * @return array|null
+     */
+    private function getRequestPropertiesFromException(Exception $e)
+    {
+        foreach ($e->getTrace() as $item)
+        {
+            if (isset($item['args']))
+            {
+                foreach ($item['args'] as $arg)
+                {
+                    if ($arg instanceof Request)
+                    {
+                        return $this->getRequestProperties($arg);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 
     /**
      * Flash page info for use in following page request
@@ -76,7 +119,12 @@ class MSApplicationInsightsHelpers
         }
 
     }
-
+    
+    /**
+     * Determines whether the Telemetry Client is enabled
+     *
+     * @return bool
+     */
     private function telemetryEnabled()
     {
         return isset($this->msApplicationInsights->telemetryClient);
@@ -94,6 +142,7 @@ class MSApplicationInsightsHelpers
     {
         $properties = [
             'ajax' => $request->ajax(),
+            'fullUrl' => $request->fullUrl(),
             'ip' => $request->ip(),
             'pjax' => $request->pjax(),
             'secure' => $request->secure(),
@@ -108,6 +157,11 @@ class MSApplicationInsightsHelpers
         if ($request->user())
         {
             $properties['user'] = $request->user()->id;
+        }
+
+        if ($request->server('HTTP_REFERER'))
+        {
+            $properties['referer'] = $request->server('HTTP_REFERER');
         }
 
         return $properties;
@@ -166,6 +220,13 @@ class MSApplicationInsightsHelpers
     }
 
 
+    /**
+     * Get additional properties for page view at the end of the request
+     *
+     * @param $request
+     *
+     * @return mixed
+     */
     private function getPageViewProperties($request)
     {
         $pageInfo = $request->session()->get('ms_application_insights_page_info');
@@ -181,6 +242,8 @@ class MSApplicationInsightsHelpers
 
 
     /**
+     * Formats time strings into a human-readable format
+     *
      * @param $duration
      *
      * @return string

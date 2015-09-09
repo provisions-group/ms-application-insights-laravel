@@ -73,7 +73,7 @@ protected $middleware = [
 
 ```
 
-The request will send the following additional parameters to Application Insights:
+The request will send the following additional properties to Application Insights:
 
 - **ajax** *(boolean)*: *true* if the request is an AJAX request
 - **ip** *(string)*: The client's IP address
@@ -81,6 +81,7 @@ The request will send the following additional parameters to Application Insight
 - **secure** *(boolean)*: *true* if the request was sent over HTTPS
 - **route** *(string)*: The name of the route, if applicable
 - **user** *(integer)*: The ID of the logged in user, if applicable
+- **referer** *(string)*: The HTTP_REFERER value from the request, if available
 
 The middleware is also used to estimate the time that a user has spent on a particular page.  This is sent as a *trace* event named **browse_duration**.
 
@@ -100,6 +101,8 @@ use Marchie\MSApplicationInsightsLaravel\Handlers\MSApplicationInsightsException
 ...
 ```
 
+The exception handler will send additional properties to Application Insights, as above.
+
 ### Client Side
 
 In order to register page view information from the client with Application Insights, simply insert the following code into your Blade views:
@@ -117,14 +120,17 @@ If you want to use any of the underlying [ApplicationInsights-PHP](https://githu
 ```php
 ...
 AIServer::trackEvent('Test event');
+AIServer::flush();
 ...
 ```
 
 See the [ApplicationInsights-PHP](https://github.com/Microsoft/ApplicationInsights-PHP) page for more information on the available methods.
 
-NOTE: You don't need to worry about calling the *flush* method; the package takes care of that bit for you when it shuts down.
-
 ## Version History
+
+### 0.2.2
+- Added additional properties to exceptions
+- Removed auto-flushing shutdown function
 
 ### 0.2.1
 - Flush queue on exception (otherwise, if Laravel is daemonized, queue exceptions will not be reported)

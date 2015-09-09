@@ -18,14 +18,7 @@ class MSApplicationInsightsServer extends InstrumentationKey
         {
             $this->telemetryClient = $telemetryClient;
             $this->telemetryClient->getContext()->setInstrumentationKey($this->instrumentationKey);
-
-            register_shutdown_function([&$this, 'shutdown']);
         }
-    }
-
-    public function shutdown()
-    {
-        $this->telemetryClient->flush();
     }
 
     public function __call($name, $arguments)

@@ -2,11 +2,26 @@
 namespace Marchie\MSApplicationInsightsLaravel\Handlers;
 
 use Exception;
+use Marchie\MSApplicationInsightsLaravel\MSApplicationInsightsHelpers;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class MSApplicationInsightsExceptionHandler extends ExceptionHandler
 {
+
+    /**
+     * @var MSApplicationInsightsHelpers
+     */
+    private $msApplicationInsightsHelpers;
+
+
+    public function __construct(MSApplicationInsightsHelpers $msApplicationInsightsHelpers, LoggerInterface $log)
+    {
+        $this->msApplicationInsightsHelpers = $msApplicationInsightsHelpers;
+        parent::__construct($log);
+    }
+
     /**
      * Report or log an exception.
      *
@@ -25,13 +40,7 @@ class MSApplicationInsightsExceptionHandler extends ExceptionHandler
             }
         }
 
-        $msApplicationInsights = app('MSApplicationInsightsServer');
-
-        if ($msApplicationInsights->telemetryClient)
-        {
-            $msApplicationInsights->telemetryClient->trackException($e);
-            $msApplicationInsights->telemetryClient->flush();
-        }
+        $this->msApplicationInsightsHelpers->trackException($e);
 
         return parent::report($e);
     }
