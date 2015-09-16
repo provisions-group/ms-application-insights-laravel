@@ -30,6 +30,7 @@ class MSApplicationInsightsHelpers
             if ($request->session()->has('ms_application_insights_page_info')) {
                 $this->msApplicationInsights->telemetryClient->trackMessage('browse_duration',
                     $this->getPageViewProperties($request));
+                $this->msApplicationInsights->telemetryClient->flush();
             }
         }
     }
@@ -57,6 +58,7 @@ class MSApplicationInsightsHelpers
                     $this->getRequestProperties($request),
                     $this->getRequestMeasurements($request, $response)
                 );
+                $this->msApplicationInsights->telemetryClient->flush();
             }
         }
     }
