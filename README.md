@@ -128,6 +128,12 @@ See the [ApplicationInsights-PHP](https://github.com/Microsoft/ApplicationInsigh
 
 ## Version History
 
+### 0.2.4
+- Added try/catch blocks when flushing data to prevent RequestExceptions from killing the application if there is a problem connecting to Application Insights.
+
+### 0.2.3
+- Corrected dingus mistake!
+
 ### 0.2.2
 - Added additional properties to exceptions
 - Removed auto-flushing shutdown function

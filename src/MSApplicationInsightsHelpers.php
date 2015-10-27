@@ -2,6 +2,7 @@
 namespace Marchie\MSApplicationInsightsLaravel;
 
 use Exception;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 
 class MSApplicationInsightsHelpers
@@ -30,7 +31,9 @@ class MSApplicationInsightsHelpers
             if ($request->session()->has('ms_application_insights_page_info')) {
                 $this->msApplicationInsights->telemetryClient->trackMessage('browse_duration',
                     $this->getPageViewProperties($request));
-                $this->msApplicationInsights->telemetryClient->flush();
+                try {
+                    $this->msApplicationInsights->telemetryClient->flush();
+                } catch (RequestException $e) {}
             }
         }
     }
@@ -58,7 +61,9 @@ class MSApplicationInsightsHelpers
                     $this->getRequestProperties($request),
                     $this->getRequestMeasurements($request, $response)
                 );
-                $this->msApplicationInsights->telemetryClient->flush();
+                try {
+                    $this->msApplicationInsights->telemetryClient->flush();
+                } catch (RequestException $e) {}
             }
         }
     }
@@ -73,7 +78,9 @@ class MSApplicationInsightsHelpers
         if ($this->telemetryEnabled()) {
             $this->msApplicationInsights->telemetryClient->trackException($e,
                 $this->getRequestPropertiesFromException($e));
-            $this->msApplicationInsights->telemetryClient->flush();
+            try {
+                $this->msApplicationInsights->telemetryClient->flush();
+            } catch (RequestException $e) {}
         }
     }
 
