@@ -61,7 +61,7 @@ Navigate to:
 
 ### Request Tracking Middleware
 
-To monitor your application's performance with request tracking, add the middleware to your application's *global* HTTP middleware stack , found in **app/Http/Kernel.php**:
+To monitor your application's performance with request tracking, add the middleware to your in your application, found in **app/Http/Kernel.php**. It has to be added after the StartSession middleware has been added.
 
 ```php
 
