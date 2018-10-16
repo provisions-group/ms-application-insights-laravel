@@ -22,5 +22,16 @@
         "psr-4": {
             "Marchie\\MSApplicationInsightsLaravel\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Marchie\\MSApplicationInsightsLaravel\\Providers\\MSApplicationInsightsServiceProvider"
+            ],
+            "aliases": {
+                "AIClient": "Marchie\\MSApplicationInsightsLaravel\\Facades\\MSApplicationInsightsClientFacade",
+	        "AIServer": "Marchie\\MSApplicationInsightsLaravel\\Facades\\MSApplicationInsightsServerFacade"
+            }
+        }
     }
 }
