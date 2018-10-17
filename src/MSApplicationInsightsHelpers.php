@@ -4,6 +4,8 @@ namespace Marchie\MSApplicationInsightsLaravel;
 use Exception;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MSApplicationInsightsHelpers
 {
@@ -56,7 +58,7 @@ class MSApplicationInsightsHelpers
                     $request->fullUrl(),
                     $_SERVER['REQUEST_TIME_FLOAT'],
                     $this->getRequestDuration(),
-                    $response->status(),
+                    $this->getResponseCode($response),
                     $this->isSuccessful($response),
                     $this->getRequestProperties($request),
                     $this->getRequestMeasurements($request, $response)
@@ -225,7 +227,7 @@ class MSApplicationInsightsHelpers
      */
     private function isSuccessful($response)
     {
-        return ($response->status() < 400);
+        return ($this->getResponseCode($response) < 400);
     }
 
 
@@ -292,5 +294,18 @@ class MSApplicationInsightsHelpers
         $days = floor($duration / 86400);
 
         return $days . ':' . $string;
+    }
+
+    /**
+     * If you use stream() or streamDownload() then the response object isn't a standard one. Here we check different
+     * places for the status code depending on the object that Laravel sends us.
+     *
+     * @param StreamedResponse|Response $response The response object
+     *
+     * @return int The HTTP status code
+     */
+    private function getResponseCode($response)
+    {
+        return $response instanceof StreamedResponse ? $response->getStatusCode() : $response->status();
     }
 }
