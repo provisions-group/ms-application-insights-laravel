@@ -1,5 +1,5 @@
 {
-    "name": "marchie/ms-application-insights-laravel",
+    "name": "kepeder/ms-application-insights-laravel",
     "description": "Microsoft Azure Application Insights for Laravel 5",
     "license": "MIT",
     "keywords": ["Laravel", "Microsoft", "Azure", "Application Insights", "monitoring", "logging"],
@@ -31,7 +31,7 @@
             ],
             "aliases": {
                 "AIClient": "Marchie\\MSApplicationInsightsLaravel\\Facades\\MSApplicationInsightsClientFacade",
-	        "AIServer": "Marchie\\MSApplicationInsightsLaravel\\Facades\\MSApplicationInsightsServerFacade"
+	            "AIServer": "Marchie\\MSApplicationInsightsLaravel\\Facades\\MSApplicationInsightsServerFacade"
             }
         }
     }
