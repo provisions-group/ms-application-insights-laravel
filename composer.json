@@ -12,11 +12,12 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "illuminate/config": "~5.0",
-        "illuminate/support": "~5.0",
-        "laravel/framework": "~5.0",
-        "microsoft/application-insights": "^0.4.0"
+        "php": ">=5.4.2",
+        "guzzlehttp/guzzle": "^6.3",
+        "illuminate/config": "~5.7",
+        "illuminate/support": "~5.7",
+        "laravel/framework": "~5.7",
+        "microsoft/application-insights": "^0.4.4"
     },
     "autoload": {
         "psr-4": {
