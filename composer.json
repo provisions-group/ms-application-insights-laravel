@@ -1,5 +1,5 @@
 {
-    "name": "kepeder/ms-application-insights-laravel",
+    "name": "marchie/ms-application-insights-laravel",
     "description": "Microsoft Azure Application Insights for Laravel 5",
     "license": "MIT",
     "keywords": ["Laravel", "Microsoft", "Azure", "Application Insights", "monitoring", "logging"],
