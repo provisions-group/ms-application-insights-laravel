@@ -20,7 +20,6 @@ class InstrumentationKey
         $this->setInstrumentationKey();
     }
 
-
     /**
      * @throws InvalidMSInstrumentationKeyException
      *
@@ -56,12 +55,23 @@ class InstrumentationKey
             return true;
         }
 
-        if (static::$alreadyThrown) {
+        if ($this->InvalidKeyExceptionWasNotThrown()) {
+            throw new InvalidMSInstrumentationKeyException(
+                "'{$instrumentationKey}' is not a valid Microsoft Application Insights instrumentation key."
+            );
+        }
+
+        return false;
+    }
+
+    protected function InvalidKeyExceptionWasNotThrown()
+    {
+        if (!static::$alreadyThrown) {
+            static::$alreadyThrown = true;
+
             return false;
         }
 
-        static::$alreadyThrown = true;
-        
-        throw new InvalidMSInstrumentationKeyException("'{$instrumentationKey}' is not a valid Microsoft Application Insights instrumentation key.");
+        return true;
     }
 }
