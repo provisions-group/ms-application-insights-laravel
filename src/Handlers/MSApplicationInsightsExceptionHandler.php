@@ -1,11 +1,12 @@
 <?php
+
 namespace Marchie\MSApplicationInsightsLaravel\Handlers;
 
 use Exception;
-use Marchie\MSApplicationInsightsLaravel\MSApplicationInsightsHelpers;
-use Psr\Log\LoggerInterface;
+use Illuminate\Container\Container;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Marchie\MSApplicationInsightsLaravel\MSApplicationInsightsHelpers;
 
 class MSApplicationInsightsExceptionHandler extends ExceptionHandler
 {
@@ -16,10 +17,11 @@ class MSApplicationInsightsExceptionHandler extends ExceptionHandler
     private $msApplicationInsightsHelpers;
 
 
-    public function __construct(MSApplicationInsightsHelpers $msApplicationInsightsHelpers, LoggerInterface $log)
+    public function __construct(Container $app)
     {
-        $this->msApplicationInsightsHelpers = $msApplicationInsightsHelpers;
-        parent::__construct($log);
+        $this->msApplicationInsightsHelpers = app(MSApplicationInsightsHelpers::class);
+
+        parent::__construct($app);
     }
 
     /**
@@ -33,7 +35,7 @@ class MSApplicationInsightsExceptionHandler extends ExceptionHandler
      *
      * @throws Exception
      */
-    public function report(Exception $e)
+    public function report(\Throwable $e)
     {
         foreach ($this->dontReport as $type)
         {

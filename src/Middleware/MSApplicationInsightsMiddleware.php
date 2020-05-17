@@ -1,4 +1,5 @@
 <?php
+
 namespace Marchie\MSApplicationInsightsLaravel\Middleware;
 
 use Closure;
@@ -48,5 +49,4 @@ class MSApplicationInsightsMiddleware
     {
         $this->msApplicationInsightHelpers->trackRequest($request, $response);
     }
-
 }
