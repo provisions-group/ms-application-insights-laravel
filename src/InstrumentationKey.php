@@ -8,6 +8,7 @@ class InstrumentationKey
     /** @var string */
     protected $instrumentationKey;
 
+    protected static $alreadyThrown = false;
 
     /**
      * InstrumentationKey constructor.
@@ -55,6 +56,12 @@ class InstrumentationKey
             return true;
         }
 
+        if (static::$alreadyThrown) {
+            return false;
+        }
+
+        static::$alreadyThrown = true;
+        
         throw new InvalidMSInstrumentationKeyException("'{$instrumentationKey}' is not a valid Microsoft Application Insights instrumentation key.");
     }
 }
