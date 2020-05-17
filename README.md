@@ -14,31 +14,6 @@ Update the `require` section of your application's **composer.json** file:
 }
 ```
 
-### Service Provider
-
-Add the service provider to the *providers* array in your application's **config/app.php** file:
-
-```php
-'providers' => [
-	...
-	Marchie\MSApplicationInsightsLaravel\Providers\MSApplicationInsightsServiceProvider::class,
-	...
-]
-```
-
-### Facade
-
-Add the facades to the *aliases* array in your application's **config/app.php** file:
-
-```php
-'aliases' => [
-	...
-	'AIClient' => Marchie\MSApplicationInsightsLaravel\Facades\MSApplicationInsightsClientFacade::class,
-	'AIServer' => Marchie\MSApplicationInsightsLaravel\Facades\MSApplicationInsightsServerFacade::class,
-	...
-]
-```
-
 ### Instrumentation Key
 
 The package will check your application's **.env** file for your *Instrumentation Key*.
@@ -56,6 +31,33 @@ You can find your instrumentation key on the [Microsoft Azure Portal](https://po
 Navigate to:
 
 **Microsoft Azure** > **Browse** > **Application Insights** > *(Application Name)* > **Settings** > **Properties**
+
+### On Laravel versions without Auto-Discovery (< 5.5):
+
+#### Service Provider
+
+Add the service provider to the *providers* array in your application's **config/app.php** file:
+
+```php
+'providers' => [
+	...
+	Marchie\MSApplicationInsightsLaravel\Providers\MSApplicationInsightsServiceProvider::class,
+	...
+]
+```
+
+#### Facade
+
+Add the facades to the *aliases* array in your application's **config/app.php** file:
+
+```php
+'aliases' => [
+	...
+	'AIClient' => Marchie\MSApplicationInsightsLaravel\Facades\MSApplicationInsightsClientFacade::class,
+	'AIServer' => Marchie\MSApplicationInsightsLaravel\Facades\MSApplicationInsightsServerFacade::class,
+	...
+]
+```
 
 ## Usage
 
