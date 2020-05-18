@@ -1,7 +1,7 @@
 <?php
 namespace Marchie\MSApplicationInsightsLaravel;
 
-use Exception;
+use Throwable;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -24,7 +24,7 @@ class MSApplicationInsightsHelpers
     /**
      * Track a page view
      *
-     * @param $request
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function trackPageViewDuration($request)
@@ -44,8 +44,8 @@ class MSApplicationInsightsHelpers
     /**
      * Track application performance
      *
-     * @param $request
-     * @param $response
+     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Response $response
      */
     public function trackRequest($request, $response)
     {
@@ -75,7 +75,7 @@ class MSApplicationInsightsHelpers
      *
      * @param Exception $e
      */
-    public function trackException(Exception $e)
+    public function trackException(Throwable $e)
     {
         if ($this->telemetryEnabled()) {
             $this->msApplicationInsights->telemetryClient->trackException($e,
@@ -94,7 +94,7 @@ class MSApplicationInsightsHelpers
      *
      * @return array|null
      */
-    private function getRequestPropertiesFromException(Exception $e)
+    private function getRequestPropertiesFromException(Throwable $e)
     {
         foreach ($e->getTrace() as $item)
         {
@@ -116,7 +116,7 @@ class MSApplicationInsightsHelpers
     /**
      * Flash page info for use in following page request
      *
-     * @param $request
+     * @param \Illuminate\Http\Request $request
      */
     public function flashPageInfo($request)
     {
@@ -145,7 +145,7 @@ class MSApplicationInsightsHelpers
     /**
      * Get properties from the Laravel request
      *
-     * @param $request
+     * @param \Illuminate\Http\Request $request
      *
      * @return array|null
      */
@@ -182,8 +182,8 @@ class MSApplicationInsightsHelpers
     /**
      * Doesn't do a lot right now!
      *
-     * @param $request
-     * @param $response
+     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Response $response
      *
      * @return array|null
      */
@@ -207,6 +207,7 @@ class MSApplicationInsightsHelpers
         return round(($_SERVER['REQUEST_TIME_FLOAT'] - $loadTime), 2);
     }
 
+
     /**
      * Calculate the time spent processing the request
      *
@@ -221,7 +222,7 @@ class MSApplicationInsightsHelpers
     /**
      * Determine if the request was successful
      *
-     * @param $response
+     * @param \Illuminate\Http\Response $response
      *
      * @return bool
      */
@@ -234,7 +235,7 @@ class MSApplicationInsightsHelpers
     /**
      * Get additional properties for page view at the end of the request
      *
-     * @param $request
+     * @param \Illuminate\Http\Request $request
      *
      * @return mixed
      */
