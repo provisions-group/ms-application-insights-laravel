@@ -306,6 +306,6 @@ class MSApplicationInsightsHelpers
      */
     private function getResponseCode($response)
     {
-        return $response instanceof StreamedResponse ? $response->getStatusCode() : $response->status();
+        return $response instanceof Response ? $response->getStatusCode() : $response->status();
     }
 }
