@@ -13,9 +13,9 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/config": "~5.0",
-        "illuminate/support": "~5.0",
-        "laravel/framework": "~5.0",
+        "illuminate/config": "~6.0",
+        "illuminate/support": "~6.0",
+        "laravel/framework": "~6.0",
         "microsoft/application-insights": "~0.4"
     },
     "autoload": {
@@ -30,7 +30,7 @@
             ],
             "aliases": {
                 "AIClient": "Marchie\\MSApplicationInsightsLaravel\\Facades\\MSApplicationInsightsClientFacade",
-	        "AIServer": "Marchie\\MSApplicationInsightsLaravel\\Facades\\MSApplicationInsightsServerFacade"
+                "AIServer": "Marchie\\MSApplicationInsightsLaravel\\Facades\\MSApplicationInsightsServerFacade"
             }
         }
     }
