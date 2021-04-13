@@ -12,10 +12,8 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "illuminate/config": "~6.0",
-        "illuminate/support": "~6.0",
-        "laravel/framework": "~6.0",
+        "php": "^7.2",
+        "laravel/framework": "^7.0",
         "microsoft/application-insights": "~0.4"
     },
     "autoload": {
