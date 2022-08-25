@@ -20,8 +20,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "laravel/framework": "~6.0",
-        "microsoft/application-insights": "~0.4"
+        "laravel/framework": "~5.0",
+        "microsoft/application-insights": "0.4.5"
     },
     "autoload": {
         "psr-4": {
