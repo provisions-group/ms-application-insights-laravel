@@ -13,11 +13,11 @@
     ],
     "require": {
         "php": ">=5.4.2",
-        "guzzlehttp/guzzle": "^6.3",
-        "illuminate/config": "^5.7|~6|~7",
-        "illuminate/support": "^5.7|~6|~7",
-        "laravel/framework": "^5.7|~6|~7",
-        "microsoft/application-insights": "^0.4"
+        "guzzlehttp/guzzle": "^6.3|^7.0",
+        "illuminate/config": "^5.7|~6|~7|~8|~9",
+        "illuminate/support": "^5.7|~6|~7|~8|~9",
+        "laravel/framework": "^5.7|~6|~7|~8|~9",
+        "app-insights-php/application-insights": "^0.4"
     },
     "autoload": {
         "psr-4": {
